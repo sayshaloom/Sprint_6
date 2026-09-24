@@ -1,12 +1,12 @@
 import pytest
+import allure
 from locators import FaqLocators
 from pages.faq_page import FaqPage
-from pages.main_page import MainPage
 import data
-
 
 class TestFaq:
 
+    @allure.title("Проверка выпадающего списка в разделе 'Вопросы о важном'")
     @pytest.mark.parametrize(
         "question_locator, answer_locator, expected_text",
         [
@@ -21,11 +21,6 @@ class TestFaq:
         ]
     )
     def test_faq_answer_appears(self, driver, question_locator, answer_locator, expected_text):
-        driver.get(data.URL)
-
-        main_page = MainPage(driver)
-        main_page.accept_cookies()
-
         faq_page = FaqPage(driver)
         faq_page.click_question(question_locator)
         actual_text = faq_page.get_answer_text(answer_locator)
