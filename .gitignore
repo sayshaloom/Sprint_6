@@ -1,0 +1,12 @@
+# Кэш Python и Pytest (технический мусор)
+__pycache__
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Локальные настройки IDE
+.vscode/
+
+# Исходные временные файлы Allure
+allure-results/
+
