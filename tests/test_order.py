@@ -1,7 +1,5 @@
 import pytest
 import allure
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from pages.main_page import MainPage
 from pages.order_page import OrderPage
 from data import URL, order_data_1, order_data_2
@@ -43,28 +41,21 @@ class TestOrder:
     def test_scooter_logo_redirects_to_main_page(self, driver):
         main_page = MainPage(driver)
 
-        # 1. Уходим с главной страницы (Замечание: промежуточный assert удален!)
         main_page.click_top_order_button()
-
-        # 2. Кликаем по логотипу самоката
         main_page.click_scooter_logo()
-
-        # 3. Проверяем возвращение на главную страницу
-        WebDriverWait(driver, 10).until(EC.url_to_be(URL))
-        assert driver.current_url == URL
+        main_page.wait_for_main_page_url(URL)
+        
+        assert main_page.get_current_url() == URL
 
     @allure.title("Проверка редиректа на Дзен при клике на логотип 'Яндекс'")
     def test_yandex_logo_redirects_to_dzen(self, driver):
         main_page = MainPage(driver)
 
-        main_window = driver.current_window_handle
+        main_window = main_page.get_current_window()
         main_page.click_yandex_logo()
 
-        WebDriverWait(driver, 10).until(EC.number_of_windows_to_be(2))
+        main_page.switch_to_new_tab(main_window)
 
-        all_windows = driver.window_handles
-        new_window = [window for window in all_windows if window != main_window][0]
-        driver.switch_to.window(new_window)
+        main_page.wait_for_dzen_url()
 
-        WebDriverWait(driver, 10).until(EC.url_contains("dzen.ru"))
-        assert "dzen.ru" in driver.current_url
+        assert "dzen.ru" in main_page.get_current_url()
